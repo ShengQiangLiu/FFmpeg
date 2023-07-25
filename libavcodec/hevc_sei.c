@@ -214,6 +214,18 @@ static int decode_nal_sei_user_data_unregistered(HEVCSEIUnregistered *s, GetBitC
     buf_ref->size = size;
     s->buf_ref[s->nb_buf_ref++] = buf_ref;
 
+    uint8_t *user_data = buf_ref->data;
+    printf("SEI UUID:");
+    for (int i = 0; i < 16; i++) {
+        printf("0x%x ", user_data[i]);
+    }
+    printf("\n");
+    printf("SEI UserData:");
+    for (int i = 16; i < size; i++) {
+        putchar(user_data[i]);
+    }
+    printf("\n");
+
     return 0;
 }
 
@@ -525,6 +537,8 @@ static int decode_nal_sei_message(GetBitContext *gb, void *logctx, HEVCSEI *s,
     }
     if (get_bits_left(gb) < 8LL*payload_size)
         return AVERROR_INVALIDDATA;
+
+    av_log(logctx, AV_LOG_INFO, "SEI nal_unit_type:%d, payload_type:%d, payload_size:%d\n", nal_unit_type, payload_type, payload_size);
     if (nal_unit_type == HEVC_NAL_SEI_PREFIX) {
         return decode_nal_sei_prefix(gb, logctx, s, ps, payload_type, payload_size);
     } else { /* nal_unit_type == NAL_SEI_SUFFIX */

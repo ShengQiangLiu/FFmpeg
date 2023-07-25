@@ -281,6 +281,17 @@ static int decode_unregistered_user_data(H264SEIUnregistered *h, GetBitContext *
     if (e == 1 && build == 1 && !strncmp(user_data+16, "x264 - core 0000", 16))
         h->x264_build = 67;
 
+    printf("SEI UUID:");
+    for (int i = 0; i < 16; i++) {
+        printf("0x%x ", user_data[i]);
+    }
+    printf("\n");
+    printf("SEI UserData:");
+    for (int i = 16; i < size; i++) {
+        putchar(user_data[i]);
+    }
+    printf("\n");
+
     return 0;
 }
 
